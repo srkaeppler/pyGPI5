@@ -1,0 +1,111 @@
+running build
+running config_cc
+unifing config_cc, config, build_clib, build_ext, build commands --compiler options
+running config_fc
+unifing config_fc, config, build_clib, build_ext, build commands --fcompiler options
+running build_src
+build_src
+building extension "iri2016srk" sources
+f2py options: []
+  skipping 'iri2016.pyf' f2py interface (up-to-date)
+  adding 'build/src.macosx-10.6-x86_64-2.7/fortranobject.c' to sources.
+  adding 'build/src.macosx-10.6-x86_64-2.7' to include_dirs.
+  adding 'build/src.macosx-10.6-x86_64-2.7/iri2016srk-f2pywrappers.f' to sources.
+build_src: building npy-pkg config files
+running build_ext
+new_compiler returns distutils.unixccompiler.UnixCCompiler
+customize UnixCCompiler
+customize UnixCCompiler using build_ext
+********************************************************************************
+distutils.unixccompiler.UnixCCompiler
+linker_exe    = ['gcc']
+compiler_so   = ['gcc', '-DNDEBUG', '-g', '-fwrapv', '-O3', '-Wall', '-Wstrict-prototypes', '-std=c++11', '-stdlib=libc++', '-mmacosx-version-min=10.8']
+archiver      = ['ar', 'rc']
+preprocessor  = ['gcc', '-E']
+linker_so     = ['gcc', '-bundle', '-undefined', 'dynamic_lookup', '-L/Users/srkaeppler/anaconda2/lib', '-arch', 'x86_64', '-lc++', '-std=c++11', '-stdlib=libc++', '-mmacosx-version-min=10.8']
+compiler_cxx  = ['g++']
+ranlib        = ['ranlib']
+compiler      = ['gcc', '-DNDEBUG', '-g', '-fwrapv', '-O3', '-Wall', '-Wstrict-prototypes', '-std=c++11', '-stdlib=libc++', '-mmacosx-version-min=10.8']
+libraries     = []
+library_dirs  = ['/Users/srkaeppler/anaconda2/lib']
+include_dirs  = ['/Users/srkaeppler/anaconda2/include/python2.7']
+********************************************************************************
+customize Gnu95FCompiler
+find_executable('gfortran')
+Found executable /usr/local/bin/gfortran
+exec_command(['/usr/local/bin/gfortran', '-dumpversion'],)
+Retaining cwd: /Users/srkaeppler/research/data/NSF_Dregion_ParticlePrecipitation/Models/iri2016
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( /usr/local/bin/gfortran -dumpversion ; echo $? > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/RQ5EjQ ) > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/Ex6ZMi 2>&1')
+_update_environment(...)
+exec_command(['/usr/local/bin/gfortran', '-Wall', '-g', '-ffixed-form', '-fno-second-underscore', '-m64', '-fPIC', '-O3', '-funroll-loops', '-print-libgcc-file-name'],)
+Retaining cwd: /Users/srkaeppler/research/data/NSF_Dregion_ParticlePrecipitation/Models/iri2016
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( /usr/local/bin/gfortran -Wall -g -ffixed-form -fno-second-underscore -m64 -fPIC -O3 -funroll-loops -print-libgcc-file-name ; echo $? > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/ACOdQc ) > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/jZDKkJ 2>&1')
+_update_environment(...)
+exec_command(['/usr/local/bin/gfortran', '-Wall', '-g', '-ffixed-form', '-fno-second-underscore', '-m64', '-fPIC', '-O3', '-funroll-loops', '-print-libgcc-file-name'],)
+Retaining cwd: /Users/srkaeppler/research/data/NSF_Dregion_ParticlePrecipitation/Models/iri2016
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( /usr/local/bin/gfortran -Wall -g -ffixed-form -fno-second-underscore -m64 -fPIC -O3 -funroll-loops -print-libgcc-file-name ; echo $? > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/6AELQ4 ) > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/jTjdTx 2>&1')
+_update_environment(...)
+customize Gnu95FCompiler
+exec_command(['/usr/local/bin/gfortran', '-dumpversion'],)
+Retaining cwd: /Users/srkaeppler/research/data/NSF_Dregion_ParticlePrecipitation/Models/iri2016
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( /usr/local/bin/gfortran -dumpversion ; echo $? > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/zVD3Jd ) > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/EZ1kZ4 2>&1')
+_update_environment(...)
+exec_command(['/usr/local/bin/gfortran', '-Wall', '-g', '-ffixed-form', '-fno-second-underscore', '-m64', '-fPIC', '-O3', '-funroll-loops', '-print-libgcc-file-name'],)
+Retaining cwd: /Users/srkaeppler/research/data/NSF_Dregion_ParticlePrecipitation/Models/iri2016
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( /usr/local/bin/gfortran -Wall -g -ffixed-form -fno-second-underscore -m64 -fPIC -O3 -funroll-loops -print-libgcc-file-name ; echo $? > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/eAERQ8 ) > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/rvLODG 2>&1')
+_update_environment(...)
+exec_command(['/usr/local/bin/gfortran', '-Wall', '-g', '-ffixed-form', '-fno-second-underscore', '-m64', '-fPIC', '-O3', '-funroll-loops', '-print-libgcc-file-name'],)
+Retaining cwd: /Users/srkaeppler/research/data/NSF_Dregion_ParticlePrecipitation/Models/iri2016
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( /usr/local/bin/gfortran -Wall -g -ffixed-form -fno-second-underscore -m64 -fPIC -O3 -funroll-loops -print-libgcc-file-name ; echo $? > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/fu3D2c ) > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/uj9_Ff 2>&1')
+_update_environment(...)
+customize Gnu95FCompiler using build_ext
+********************************************************************************
+numpy.distutils.fcompiler.gnu.Gnu95FCompiler
+version_cmd     = ['/usr/local/bin/gfortran', '-dumpversion']
+compiler_fix    = ['/usr/local/bin/gfortran', '-Wall', '-g', '-ffixed-form', '-fno-second-underscore', '-Wall', '-g', '-fno-second-underscore', '-m64', '-fPIC', '-O3', '-funroll-loops']
+ranlib          = ['/usr/local/bin/gfortran']
+linker_exe      = ['/usr/local/bin/gfortran', '-Wall', '-lc++']
+archiver        = ['/usr/local/bin/gfortran', '-cr']
+compiler_f77    = ['/usr/local/bin/gfortran', '-Wall', '-g', '-ffixed-form', '-fno-second-underscore', '-m64', '-fPIC', '-O3', '-funroll-loops']
+linker_so       = ['/usr/local/bin/gfortran', '-Wall', '-g', '-lc++']
+compiler_f90    = ['/usr/local/bin/gfortran', '-Wall', '-g', '-fno-second-underscore', '-m64', '-fPIC', '-O3', '-funroll-loops']
+version         = LooseVersion ('4.8.1')
+libraries       = ['gfortran']
+library_dirs    = ['/usr/local/lib/gcc/x86_64-apple-darwin12.5.0/4.8.1', '/Users/srkaeppler/anaconda2/lib']
+object_switch   = '-o '
+compile_switch  = '-c'
+include_dirs    = ['/Users/srkaeppler/anaconda2/include/python2.7']
+********************************************************************************
+building 'iri2016srk' extension
+compiling C sources
+C compiler: gcc -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -std=c++11 -stdlib=libc++ -mmacosx-version-min=10.8
+
+compile options: '-Ibuild/src.macosx-10.6-x86_64-2.7 -I/Users/srkaeppler/anaconda2/lib/python2.7/site-packages/numpy/core/include -I/Users/srkaeppler/anaconda2/include/python2.7 -c'
+gcc: build/src.macosx-10.6-x86_64-2.7/iri2016srkmodule.c
+exec_command(['gcc', '-DNDEBUG', '-g', '-fwrapv', '-O3', '-Wall', '-Wstrict-prototypes', '-std=c++11', '-stdlib=libc++', '-mmacosx-version-min=10.8', '-Ibuild/src.macosx-10.6-x86_64-2.7', '-I/Users/srkaeppler/anaconda2/lib/python2.7/site-packages/numpy/core/include', '-I/Users/srkaeppler/anaconda2/include/python2.7', '-c', 'build/src.macosx-10.6-x86_64-2.7/iri2016srkmodule.c', '-o', 'build/build/src.macosx-10.6-x86_64-2.7/iri2016srkmodule.o'],)
+Retaining cwd: /Users/srkaeppler/research/data/NSF_Dregion_ParticlePrecipitation/Models/iri2016
+_preserve_environment([])
+_update_environment(...)
+_exec_command_posix(...)
+Running os.system('( gcc -DNDEBUG -g -fwrapv -O3 -Wall -Wstrict-prototypes -std=c++11 -stdlib=libc++ -mmacosx-version-min=10.8 -Ibuild/src.macosx-10.6-x86_64-2.7 -I/Users/srkaeppler/anaconda2/lib/python2.7/site-packages/numpy/core/include -I/Users/srkaeppler/anaconda2/include/python2.7 -c build/src.macosx-10.6-x86_64-2.7/iri2016srkmodule.c -o build/build/src.macosx-10.6-x86_64-2.7/iri2016srkmodule.o ; echo $? > /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/2ztSP7 ) 2>&1 | tee /var/folders/64/qrztrg0d6cdg66m6pvbpy2d00000gp/T/tmpDNjhGB/cwQdC5 ')
+gcc: error: unrecognized command line option ‘-stdlib=libc++’
+_update_environment(...)
+gcc: error: unrecognized command line option ‘-stdlib=libc++’

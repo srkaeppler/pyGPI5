@@ -1,0 +1,26 @@
+FFILE	= iri
+OBJS	= irisub.o irifun.o iritec.o iridreg.o igrf.o cira.o
+OBJS1	= $(FFILE).o $(OBJS)
+CINCLUDE =
+BIN      =
+LIBS     = -I/sw/include -L/sw/lib -L/usr/lib -L/usr/X11R6/lib -lg2c -lm
+GLIB     = -L/usr/X11R6/lib -lX11
+BLIB     =
+CC       = gcc -ffast-math
+FC       = /sw/bin/g77
+#FFLAGS   =-Wall -ansi -D_GNU_SOURCE -D_DARWIN
+FFLAGS   = -fno-automatic -finit-local-zero -O3 -ff77 -ffast-math -Wall -D_GNU_SOURCE -D_DARWIN
+#-funroll-all-loops -fexpensive-optimizations
+
+$(FFILE):  $(OBJS1)
+	@echo "Creating ...."
+	$(FC) $(FFLAGS) $(OBJS1) $(BLIB) $(LIBS) -o $(FFILE)
+
+irilib:	$(OBJS)
+	@echo "Creating ...."
+	libtool -static -o libiri2001.a $(OBJS)
+	gcc -dynamiclib -all_load -flat_namespace -single_module $(LIBS) -o libiri2001.dylib libiri2001.a
+
+clean:
+	@echo "Cleaning ... "
+	rm -f *# *~ *.o

@@ -1,0 +1,127 @@
+!    -*- f90 -*-
+! Note: the context of this file is case sensitive.
+
+python module iri2016 ! in 
+    interface  ! in :iri2016
+        subroutine iri_sub(jf,jmag,alati,along,iyyyy,mmdd,dhour,heibeg,heiend,heistp,outf,oarr) ! in :iri2016:irisub.for
+            logical dimension(50),intent(in) :: jf
+            integer intent(in) :: jmag
+            real intent(in) :: alati
+            real intent(in) :: along
+            integer intent(in) :: iyyyy
+            integer intent(in) :: mmdd
+            real intent(in) :: dhour
+            real intent(in) :: heibeg
+            real intent(in) :: heiend
+            real intent(in) :: heistp
+            real dimension(20,1000),intent(out) :: outf
+            real dimension(100),intent(out) :: oarr
+            real :: umr
+            real :: pi
+            real :: humr
+            real :: dumr
+            real :: argmax
+            real :: era
+            real :: aquad
+            real :: bquad
+            real :: dimo
+            real :: hmf2
+            real :: nmf2s
+            real :: hmf1
+            logical :: f1reg
+            real :: b0
+            real :: b1
+            real :: c1
+            real :: hz
+            real :: t
+            real :: hst
+            real :: hme
+            real :: nmes
+            real :: hef
+            logical :: enight
+            real dimension(4) :: e
+            real :: hmd
+            real :: nmd
+            real :: hdx
+            real :: d1
+            real :: xkk
+            real :: fp30
+            real :: fp3u
+            real :: fp1
+            real :: fp2
+            real :: hs
+            real :: tnhs
+            real dimension(4) :: xsm
+            real dimension(5) :: mm
+            real dimension(4) :: dti
+            integer :: mxsm
+            real dimension(7) :: ahh
+            real :: ate1
+            real dimension(6) :: stte
+            real dimension(5) :: dte
+            real :: beta
+            real :: eta
+            real :: delta
+            real :: zeta
+            real :: flon
+            real :: ryear
+            real :: b2top
+            real :: tc3
+            integer :: itopn
+            real :: alg10
+            real :: hcor1
+            integer :: konsol
+            logical :: mess
+            real dimension(25) :: sw
+            integer :: isw
+            real dimension(25) :: swc
+            real :: y05
+            real :: h05top
+            real :: qf
+            real :: xnetop
+            real :: xm3000
+            real :: hhalf
+            real :: tau
+            common /const/ umr,pi
+            common /const1/ humr,dumr
+            common /argexp/ argmax
+            common /igrf1/ era,aquad,bquad,dimo
+            common /block1/ hmf2,nmf2s,hmf1,f1reg
+            common /block2/ b0,b1,c1
+            common /block3/ hz,t,hst
+            common /block4/ hme,nmes,hef
+            common /block5/ enight,e
+            common /block6/ hmd,nmd,hdx
+            common /block7/ d1,xkk,fp30,fp3u,fp1,fp2
+            common /block8/ hs,tnhs,xsm,mm,dti,mxsm
+            common /blote/ ahh,ate1,stte,dte
+            common /blo10/ beta,eta,delta,zeta
+            common /findrlat/ flon,ryear
+            common /blo11/ b2top,tc3,itopn,alg10,hcor1
+            common /iounit/ konsol,mess
+            common /csw/ sw,isw,swc
+            common /qtop/ y05,h05top,qf,xnetop,xm3000,hhalf,tau
+        end subroutine iri_sub
+        subroutine iri_web(jmag,jf,alati,along,iyyyy,mmdd,iut,dhour,height,h_tec_max,ivar,vbeg,vend,vstp,a,b) ! in :iri2016:irisub.for
+            integer :: jmag
+            logical dimension(50) :: jf
+            real :: alati
+            real :: along
+            integer :: iyyyy
+            integer :: mmdd
+            integer :: iut
+            real :: dhour
+            real :: height
+            real :: h_tec_max
+            integer :: ivar
+            real :: vbeg
+            real :: vend
+            real :: vstp
+            real dimension(20,1000) :: a
+            real dimension(100,1000) :: b
+        end subroutine iri_web
+    end interface 
+end python module iri2016
+
+! This file was auto-generated with f2py (version:1.21.1).
+! See http://cens.ioc.ee/projects/f2py2e/

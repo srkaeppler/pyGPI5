@@ -1,0 +1,16 @@
+
+05-28-2022:
+Ran into an issue where iri would not compile because couldn't find stdio.h
+https://stackoverflow.com/questions/51761599/cannot-find-stdio-h
+
+Fixed it doing the following:
+"
+
+Try setting SDKROOT explicitly to the system SDK:
+
+export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
+
+Doing it avoids the need for creating symlinks in /usr.
+
+This error seem recurrent, for example, if you installed another compiler (e.g. gcc from brew). Setting SDKROOT became so common that it might be a good idea to add it to ~/.bash_profile.
+"

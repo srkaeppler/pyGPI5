@@ -1,0 +1,31 @@
+fortran_files = cira.for igrf.for iridreg.for irifun.for irisub.for iritec.for iriflip.for
+only = iri_sub read_ig_rz readapf107
+mod = iri16duly
+
+f77flags = -std=legacy -w -O2 -fbacktrace -fno-automatic -fPIC
+
+clean:
+	rm -f *~
+	rm -f *.x
+	rm -f *.mod
+	rm -f *.pyf
+	rm -f *.so
+	rm -f *.rej
+
+test_gfortran:
+	make patch_iriflip;
+	make patch_irisub;
+	gfortran $(f77flags) -o test_gfortran.x simple_iri_driver.for $(fortran_files)
+
+patch_iriflip:
+	python delete_iriflip_comments.py
+
+sig:
+	f2py -m $(mod) -h sig_file.pyf $(fortran_files) only: $(only) : | tee out1
+
+patch_sig:
+	patch sig_file.pyf -i sig.patch -o sig_file_patched.pyf
+
+mod:
+	# This works well [1]
+	f2py -c sig_file.pyf $(fortran_files) --fcompiler=gfortran --f77flags="$(f77flags)" | tee out2
