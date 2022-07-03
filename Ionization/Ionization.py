@@ -18,7 +18,7 @@ class Ionization:
         """
         Implementing Fang et al., 2010
         """
-        self.MSISDir = '/Users/srkaeppler/research/data/NSF_Dregion_ParticlePrecipitation/Models/'
+        self.MSISDir = '/Users/srkaeppler/research/data/pyGPI5/Models/'
         sys.path.append(self.MSISDir)
         import MSIS
         self.Pij = numpy.zeros([7,4])
@@ -115,7 +115,7 @@ class Ionization:
             Fang 2008 paper
         """
 
-        print 'In Fang Model Maxwellian Q0 E0', Q0,E0
+        #print 'In Fang Model Maxwellian Q0 E0', Q0,E0
         # do all of the conversions here
         zcm = altkm*(1000.*100.) # cm
         EkeV = E0/1000. # KeV
@@ -305,7 +305,7 @@ class Ionization:
         #             Mass Density (kg/m^3)
         #         Fang 2008 paper
         # run msis
-        print 'IonizationFang Function Q0, E0', Q0, E0
+        # print 'IonizationFang Function Q0, E0', Q0, E0
         altkm = numpy.arange(AltMin,AltMax,AltStep)
         MassDensity,Hz = self.RunMSISFang(tUnix,glat,glon,altkm=altkm)
         qZ,y,f = self.FangModelMaxwellian(Q0,E0,altkm,Hz,MassDensity)
@@ -397,7 +397,7 @@ if __name__ == '__main__':
     kk = 0
     plt.figure(104)
     for ii in NumPts:
-        print ii
+        # print ii
         EeV = numpy.logspace(2,5,num=ii)
         Q0 = 1.0
         E0 = 5.0*1e3
@@ -406,9 +406,9 @@ if __name__ == '__main__':
         A = iz.MakeFangModelMatrix(EeV,tunix,glat,glon,altkm=altkm)
         qZMat = numpy.dot(A,NumFlux[0:-1]*6.242e11*1000.*10.) # this factor of 10 is adhoc...
 
-        print 'qZMat', qZMat.shape
-        print 'qZMat',qZMat
-        print 'qZSimp', qZSimp
+        # print 'qZMat', qZMat.shape
+        # print 'qZMat',qZMat
+        # print 'qZSimp', qZSimp
         # plt.semilogx(qZ,altkm, '-', lw=2, color=color[kk])
         plt.semilogx(qZSimp,altkm,'--',lw=2,color=color[kk])
         plt.semilogx(qZMat,altkm, '+',color=color[kk] )
@@ -418,15 +418,15 @@ if __name__ == '__main__':
     # MakeFangModelMatrix(self, EeV,tUnix, glat,glon,altkm = numpy.arange(80,150,1)):
     EeV = numpy.logspace(2,6,num=51)
     A = iz.MakeFangModelMatrix(EeV,tunix,glat,glon,altkm=altkm)
-    print A, A.shape
+    # print A, A.shape
     Q0 = 2.0
     E0 = 5.0*1e3
     NumFlux,QeV = iz.MaxwellianFlux(EeV,Q0,E0)
-    print 'NumFlux', NumFlux
-    print 'QeV', QeV
-    print scipy.integrate.simps(QeV,EeV)
-    print scipy.integrate.simps(NumFlux*EeV,EeV)
+    # print 'NumFlux', NumFlux
+    # print 'QeV', QeV
+    # print scipy.integrate.simps(QeV,EeV)
+    # print scipy.integrate.simps(NumFlux*EeV,EeV)
     dE = numpy.diff(EeV)
-    print dE.shape, EeV.shape
-    print numpy.sum(NumFlux[0:-1]*EeV[0:-1]*dE)
+    # print dE.shape, EeV.shape
+    # print numpy.sum(NumFlux[0:-1]*EeV[0:-1]*dE)
     plt.show()
