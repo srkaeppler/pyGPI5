@@ -11,7 +11,7 @@ CC       = gcc -ffast-math
 FC       = gfortran
 SO 		 = iri2016
 PYF 	 = iri2016.pyf
-F2PY	= "/Users/srkaeppler/Env3/conductivity/bin/f2py"
+F2PY	= "/Users/srkaeppler/Env3/Dregion3/bin/f2py"
 #FFLAGS   =-Wall -ansi -D_GNU_SOURCE -D_DARWIN
 # I am not sure I know what all this crap does...
 #FFLAGS   = -fno-automatic -finit-local-zero -O2 -ffast-math -fPIC

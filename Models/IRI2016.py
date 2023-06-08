@@ -7,7 +7,7 @@ class IRI2016:
 
     def __init__(self):
 
-        self.iridir = '/Users/srkaeppler/research/data/AFOSR_Eregion_Conductivity/Models/iri2016'
+        self.iridir = '/Users/srkaeppler/research/data/pyGPI5/Models/iri2016'
 
 #        self.iridir = '/Users/srkaeppler/Dropbox/research/data/NSF_Dregion_ParticlePrecipitation/Models/iri2016'
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     Heibeg = 65.
     Heiend = 500.
     step = 0.5
-    t1 = datetime.datetime(2010,1,1,1,0,0)
+    t1 = datetime.datetime(2022,1,1,1,0,0)
     iri = IRI2016()
     import pylab as plt
     plt.figure()

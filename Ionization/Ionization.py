@@ -270,11 +270,21 @@ class Ionization:
         qZsimp = numpy.zeros(altkm.shape[0])
         if IonizationType == 'Fang':
             MassDensity,Hz = self.RunMSISFang(tUnix,glat,glon,altkm=altkm)
-
-        for iE in range(len(E)):
-            if IonizationType == 'Fang':
+            for iE in range(len(E)):
                 tmpqz,y,f = self.FangModel(E[iE],EnergyFlux[iE],altkm,Hz,MassDensity)
                 qZE[:,iE] = tmpqz
+
+
+        # this is slightly different
+        # in this case would put in Q0 and E0 for each energy
+        if IonizationType == 'Maxwellian':
+            MassDensity,Hz = self.RunMSISFang(tUnix,glat,glon,altkm=altkm)
+            # FangModelMaxwellian(self, Q0,E0, altkm, Hz,MassDensity):
+            for iE in range(len(E)):
+                tmpqz,y,f = self.FangModelMaxwellian(EnergyFlux[iE],E[iE],altkm,Hz,MassDensity)
+                qZE[:,iE] = tmpqz
+
+
 
         # sum over energy to get the final altitude profile
         # need to multiply by dE

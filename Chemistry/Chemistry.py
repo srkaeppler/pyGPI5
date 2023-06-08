@@ -254,7 +254,7 @@ class Chemistry:
                                                     CO2 = iriDict['O2+'],\
                                                     CNO = iriDict['NO+'],\
                                                     CO = iriDict['O+'])
-            print('alphaD,', outDict['alphaD'])
+            # rint('alphaD,', outDict['alphaD'])
 
 
 
@@ -370,7 +370,7 @@ class Chemistry:
 
 
 
-    def Integrate_ODE(self,NeIn,Sin,ChemistryDict,IntType='5species'):
+    def Integrate_ODE(self,NeIn,Sin,ChemistryDict,IntType='5species', IntegrationTime = 0.):
         """
         Similar to testodeintegrate.py in the matlab folder
         This step could be parallelized
@@ -386,6 +386,8 @@ class Chemistry:
             ode15s = scipy.integrate.ode(self.Dregion_Chemistry_5species)
             ode15s.set_integrator('vode', method='bdf', order=15, nsteps=self.nSteps)
             y0 = numpy.zeros(4)
+
+
 
         args = numpy.zeros(9)
         N = ChemistryDict['B'].shape[0]
@@ -687,7 +689,7 @@ class Chemistry:
         self.Sin, self.y0 =self.Calculate_Background_Ionization(self.altkm,self.NeIn,self.DregionChem)
         return
 
-    def __call__(self,qz,altkm,TypeName='Dregion'):
+    def __call__(self,qz,altkm,TypeName='Dregion',IntegrationTime = 0):
         """
         Run routine requires the altitude grid, and whether this is
         E or D-region ionization, which must be specified
@@ -698,6 +700,9 @@ class Chemistry:
             only the ionization is changing.
 
         """
+        if IntegrationTime != 0:
+            self.ISRIntTime = IntegrationTime
+            print('IntegrationTime', self.ISRIntTime)
         iriAltGrid = self.altkm
         qin = numpy.zeros(qz.shape[0])
         print('qz.shape, altkm.shape', qz.shape, altkm.shape)
