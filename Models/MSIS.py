@@ -125,9 +125,9 @@ class MSIS:
 
 
     def __init__(self):
-        self.geophys_dir = '/Users/srkaeppler/research/data/AFOSR_Eregion_Conductivity/Models/AP_KP'
+        self.geophys_dir = '/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP'
 
-        self.inLib = '/Users/srkaeppler/research/data/AFOSR_Eregion_Conductivity/Models/nrlmsise00/libnrlmsise-00.so'
+        self.inLib = '/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so'
         if os.path.isfile(self.inLib):
             self.ctype_msis = ctypes.cdll.LoadLibrary(self.inLib)
         else:
