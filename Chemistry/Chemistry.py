@@ -26,8 +26,8 @@ sys.path.append('../Models')
 import iri2020 # this needs to be installed following directions at: https://github.com/space-physics/iri2020
 import MSIS
 msis = MSIS.MSIS()
-
 import matplotlib.pyplot as plt
+import datetime
 
 class Chemistry:
 
