@@ -289,7 +289,11 @@ class Ionization:
         # sum over energy to get the final altitude profile
         # need to multiply by dE
         for ih in range(altkm.shape[0]):
-            qZsimp[ih] = scipy.integrate.simps(qZE[ih,:], E/1000.)
+            """
+            Deprecated
+            """
+            #qZsimp[ih] = scipy.integrate.simps(qZE[ih,:], E/1000.)
+            qZsimp[ih] = scipy.integrate.simpson(qZE[ih,:], x=E/1000.) # new call
         # this needs to be normalized by a dimensionless quantity or I am not doing something
         # ahead of time
         qZ = numpy.sum(qZE, axis=1)

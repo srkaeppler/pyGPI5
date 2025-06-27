@@ -19,8 +19,11 @@ import scipy.integrate
 import copy
 import sys
 sys.path.append('../Models')
-import IRI2016
-iri2016 = IRI2016.IRI2016()
+
+# deprecated IRI2016 as of 27 June 2025 
+# import IRI2016
+# iri2016 = IRI2016.IRI2016()
+import iri2020 # this needs to be installed following directions at: https://github.com/space-physics/iri2020
 import MSIS
 msis = MSIS.MSIS()
 
@@ -71,13 +74,13 @@ class Chemistry:
         CO2[CO2 < 0] = 1e-8
 
         if len(CO2) > 0:
-            assert (CO2.shape[0] == Te.shape[0], "CO Shape is not the same as Te")
+            # assert (CO2.shape[0] == Te.shape[0], "CO Shape is not the same as Te")
             alpha = (CO2/100.)*a_O2 + alpha
         if len(CNO) > 0:
-            assert (CNO.shape[0] == Te.shape[0], "CNO Shape is not the same as Te")
+            # assert (CNO.shape[0] == Te.shape[0], "CNO Shape is not the same as Te")
             alpha = (CNO/100.)*a_NO + alpha
         if len(CO) > 0:
-            assert (CO.shape[0] == Te.shape[0], "CO Shape is not the same as Te")
+            # assert (CO.shape[0] == Te.shape[0], "CO Shape is not the same as Te")
             alpha = (CO/100.)*a_O + alpha
 
         return alpha
@@ -660,8 +663,35 @@ class Chemistry:
         ionization profile
         """
 
+        """
+        srk edit on 6/27/2025
+        Updating this with Michael Hirsch implementation of iri2020 which you need to pip install
+        Ran into trouble that my f2py stuff won't work on versions above python 3.11.
+        Make sure to update coefficients for this implementation
+        """
+       ## deprecated ##
        # now run IRI to get the profile in
-        iriDict = iri2016.IRI2016(tUnix,glat,glon,AltitudeMin,AltitudeMax,deltaAltitude)
+       # iriDict = iri2016.IRI2016(tUnix,glat,glon,AltitudeMin,AltitudeMax,deltaAltitude)
+       
+       # now using hirsch IRI 2020, look at testIRI2020.py in models for help on how to get dictionary correct
+        dtt = datetime.datetime.fromtimestamp(tUnix, datetime.UTC) # this is the new way to do this. deprecation warning 6/27/2025
+        iriIn = iri2020.IRI(dtt, [AltitudeMin,AltitudeMax,deltaAltitude], glat,glon)
+
+        iriDict = dict()
+        iriDict['Ne'] = iriIn.ne.data
+        iriDict['Ti'] = iriIn.Ti.data
+        iriDict['Te'] = iriIn.Te.data
+        totalmass = iriIn['nO+'].data + iriIn['nH+'].data + iriIn['nHe+'].data +\
+             iriIn['nO2+'].data + iriIn['nNO+'].data + iriIn['nN+'].data
+
+        # these are technically the concentrations.  I set it up to calculate those instead
+        iriDict['O+'] = iriIn['nO+'].data/totalmass
+        iriDict['O2+'] = iriIn['nO2+'].data/totalmass
+        iriDict['NO+'] = iriIn['nNO+'].data/totalmass
+        iriDict['N+'] = iriIn['nN+'].data/totalmass
+        iriDict['Altitude'] = iriIn['alt_km'].data
+       
+       # now back to the regularly scheduled program...
         self.NeIn = iriDict['Ne']/1e6 # needs to be in cm^-3
         self.altkm = iriDict['Altitude']
 
@@ -771,6 +801,9 @@ class Chemistry:
         return results
 
 if __name__ == "__main__":
+    """
+    Deprecated
+    
     # do validation of previous results as building up the class.
     from scipy.io import loadmat
     dataIn = loadmat('./Matlab/Everything.mat')
@@ -836,9 +869,15 @@ if __name__ == "__main__":
     # plt.show()
 
     """
+
+
+
+    """
     Test the finding the background distribution
     This validates the binary search routine
     """
+    
+    
     """
     NeIn = dataIn['Nspec0'][:,0]
     altkm = dataIn['z']
@@ -856,7 +895,7 @@ if __name__ == "__main__":
     Testing initialize ionosphere and msis
     This will allow someone to update the ionosphere and MSIS as needed
     """
-
+    chem = Chemistry()
     import datetime
     AltMinKm = 50.
     AltMaxKm = 150.
