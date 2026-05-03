@@ -92,10 +92,15 @@ MSIS Documentation:
 
 """
 
+
+
+
 import os, ctypes
 # import numpy, numpy.fftpack, numpy.interpolate, numpy.optimize
 import numpy
 import datetime
+import configparser
+
 
 
 # this is just how this needs to be defined
@@ -127,10 +132,12 @@ class MSIS_INPUT(ctypes.Structure):
 class MSIS:
 
 
-    def __init__(self, geophys_dir, inLib):
-        self.geophys_dir = geophys_dir #'/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP'
+    def __init__(self, inconfigfile):
+        config = configparser.ConfigParser()
+        config.read(inconfigfile)
+        self.geophys_dir = config['DEFAULT']['APKP_Path'] #'/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP'
 
-        self.inLib = inLib #'/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so'
+        self.inLib = config['DEFAULT']['MSISLib_Path'] #'/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so'
         if os.path.isfile(self.inLib):
             self.ctype_msis = ctypes.cdll.LoadLibrary(self.inLib)
         else:
@@ -401,8 +408,8 @@ class MSIS:
 
 if __name__ == '__main__':
     # test case
-    msis = MSIS('/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP', \
-                '/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so')
+    # '/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so'
+    msis = MSIS('test.cfg')
     year=2025
     doy=172
     hrUT=29000/3600.
