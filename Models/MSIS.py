@@ -127,10 +127,10 @@ class MSIS_INPUT(ctypes.Structure):
 class MSIS:
 
 
-    def __init__(self):
-        self.geophys_dir = '/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP'
+    def __init__(self, geophys_dir, inLib):
+        self.geophys_dir = geophys_dir #'/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP'
 
-        self.inLib = '/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so'
+        self.inLib = inLib #'/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so'
         if os.path.isfile(self.inLib):
             self.ctype_msis = ctypes.cdll.LoadLibrary(self.inLib)
         else:
@@ -400,7 +400,8 @@ class MSIS:
 
 if __name__ == '__main__':
     # test case
-    msis = MSIS()
+    msis = MSIS('/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP', \
+                '/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so')
     year=2010
     doy=172
     hrUT=29000/3600.
