@@ -1,6 +1,9 @@
 #! /usr/bin/env python
 
 """
+
+05/02/2026: GET AP_KP from https://amisr.com/geophys_params/
+
 xxxxx
 
 Originally written  by:
