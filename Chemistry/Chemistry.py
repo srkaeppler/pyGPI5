@@ -18,20 +18,29 @@ import numpy
 import scipy.integrate
 import copy
 import sys
-sys.path.append('../Models')
-
-# deprecated IRI2016 as of 27 June 2025 
+import configparser
+# sys.path.append('../Models')
 # import IRI2016
 # iri2016 = IRI2016.IRI2016()
-import iri2020 # this needs to be installed following directions at: https://github.com/space-physics/iri2020
-import MSIS
-msis = MSIS.MSIS()
+# import MSIS
+# msis = MSIS.MSIS()
 
 import matplotlib.pyplot as plt
 
 class Chemistry:
 
-    def __init__(self, SteadyStateTime = 1.e4,ISRIntegrationTime=1.e4):
+    def __init__(self, inconfigfile, SteadyStateTime = 1.e4,ISRIntegrationTime=1.e4):
+        
+        # read in from config file
+        config = configparser.ConfigParser()
+        config.read(inconfigfile)
+        sys.path.append(config['DEFAULT']['Model_Path'])
+        import IRI2016
+        iri2016 = IRI2016.IRI2016()
+        import MSIS
+        msis = MSIS.MSIS(inconfigfile)
+        self.msis = msis
+        self.iri2016 = iri2016
         self.NeIn = None
         self.Sin = None
         self.Tn = None
@@ -74,13 +83,13 @@ class Chemistry:
         CO2[CO2 < 0] = 1e-8
 
         if len(CO2) > 0:
-            # assert (CO2.shape[0] == Te.shape[0], "CO Shape is not the same as Te")
+            assert (CO2.shape[0] == Te.shape[0], "CO Shape is not the same as Te")
             alpha = (CO2/100.)*a_O2 + alpha
         if len(CNO) > 0:
-            # assert (CNO.shape[0] == Te.shape[0], "CNO Shape is not the same as Te")
+            assert (CNO.shape[0] == Te.shape[0], "CNO Shape is not the same as Te")
             alpha = (CNO/100.)*a_NO + alpha
         if len(CO) > 0:
-            # assert (CO.shape[0] == Te.shape[0], "CO Shape is not the same as Te")
+            assert (CO.shape[0] == Te.shape[0], "CO Shape is not the same as Te")
             alpha = (CO/100.)*a_O + alpha
 
         return alpha
@@ -270,7 +279,10 @@ class Chemistry:
 
         outDict['gammaX'] = self.Calculate_GammaX(Nm, daytime=options['daytime'])
         outDict['Xbar'] = self.Calculate_Xbar(Nm)
-
+        
+        qnan = numpy.where(numpy.isnan(outDict['alphaD']) == True)[0]
+        # print('qnan',qnan)
+        outDict['alphaD'][qnan] = 1e-8
         return outDict
 
     def Dregion_Chemistry_5species(self,t,N,params):
@@ -461,6 +473,7 @@ class Chemistry:
         args[7] = ChemistryDict['gammaX'][iz]
         args[8] = ChemistryDict['Xbar'][iz]
 
+        # print('iz, args', iz, args)
 
         ode15s.set_initial_value(y0,0.).set_f_params(args)
         results = ode15s.integrate(self.SteadyState)
@@ -585,9 +598,9 @@ class Chemistry:
         i0 = izMin[q0][0]
         ScaleHeight = 2. # km
         Sout[0:i0] = Sout[i0]*numpy.exp((altkm[0:i0]-altkm[i0])/ScaleHeight)
-        print('izMin', izMin)
-        print('q0',q0)
-        print('i0',i0)
+        # print('izMin', izMin)
+        # print('q0',q0)
+        # print('i0',i0)
         # % Extend the source to low altitudes
         # ii=find(S0<=0);
         # i0=min(find(S0>0));
@@ -610,7 +623,7 @@ class Chemistry:
             y0 = self.ODE(Sout[iz],iz, ChemistryDict)
             yInitial[iz,0:4] = y0
             yInitial[iz,-1] = (y0[0]+y0[1]+y0[3])-y0[2]
-            print('iz y0,', iz, y0)
+            # print('iz,altkm,Sout, y0,', iz,altkm[iz], Sout[iz], y0)
 
         NeIn = dict()
         NeIn['Ne'] = yInitial[:,0]
@@ -663,35 +676,8 @@ class Chemistry:
         ionization profile
         """
 
-        """
-        srk edit on 6/27/2025
-        Updating this with Michael Hirsch implementation of iri2020 which you need to pip install
-        Ran into trouble that my f2py stuff won't work on versions above python 3.11.
-        Make sure to update coefficients for this implementation
-        """
-       ## deprecated ##
        # now run IRI to get the profile in
-       # iriDict = iri2016.IRI2016(tUnix,glat,glon,AltitudeMin,AltitudeMax,deltaAltitude)
-       
-       # now using hirsch IRI 2020, look at testIRI2020.py in models for help on how to get dictionary correct
-        dtt = datetime.datetime.fromtimestamp(tUnix, datetime.UTC) # this is the new way to do this. deprecation warning 6/27/2025
-        iriIn = iri2020.IRI(dtt, [AltitudeMin,AltitudeMax,deltaAltitude], glat,glon)
-
-        iriDict = dict()
-        iriDict['Ne'] = iriIn.ne.data
-        iriDict['Ti'] = iriIn.Ti.data
-        iriDict['Te'] = iriIn.Te.data
-        totalmass = iriIn['nO+'].data + iriIn['nH+'].data + iriIn['nHe+'].data +\
-             iriIn['nO2+'].data + iriIn['nNO+'].data + iriIn['nN+'].data
-
-        # these are technically the concentrations.  I set it up to calculate those instead
-        iriDict['O+'] = iriIn['nO+'].data/totalmass
-        iriDict['O2+'] = iriIn['nO2+'].data/totalmass
-        iriDict['NO+'] = iriIn['nNO+'].data/totalmass
-        iriDict['N+'] = iriIn['nN+'].data/totalmass
-        iriDict['Altitude'] = iriIn['alt_km'].data
-       
-       # now back to the regularly scheduled program...
+        iriDict = self.iri2016.IRI2016(tUnix,glat,glon,AltitudeMin,AltitudeMax,deltaAltitude)
         self.NeIn = iriDict['Ne']/1e6 # needs to be in cm^-3
         self.altkm = iriDict['Altitude']
 
@@ -702,8 +688,8 @@ class Chemistry:
         doy = -1*int((tUnix/(24.*3600))%365)
         utHrs = (tUnix/3600.)%24
 
-        self.MSISDict = msis.MSIS(doy,utHrs,glat,glon,year,altkm=self.altkm, CGSorSI = 'CGS')
-        self.MSISatRef = msis.MSIS(doy,utHrs,glat,glon,year,altkm=numpy.array([15.]), CGSorSI = 'CGS')
+        self.MSISDict = self.msis.MSIS(doy,utHrs,glat,glon,year,altkm=self.altkm, CGSorSI = 'CGS')
+        self.MSISatRef = self.msis.MSIS(doy,utHrs,glat,glon,year,altkm=numpy.array([15.]), CGSorSI = 'CGS')
         # [ZZZ]needs to be user specified
         options = dict()
         options['GammaType'] = 'Temp'
@@ -801,9 +787,6 @@ class Chemistry:
         return results
 
 if __name__ == "__main__":
-    """
-    Deprecated
-    
     # do validation of previous results as building up the class.
     from scipy.io import loadmat
     dataIn = loadmat('./Matlab/Everything.mat')
@@ -869,15 +852,9 @@ if __name__ == "__main__":
     # plt.show()
 
     """
-
-
-
-    """
     Test the finding the background distribution
     This validates the binary search routine
     """
-    
-    
     """
     NeIn = dataIn['Nspec0'][:,0]
     altkm = dataIn['z']
@@ -895,7 +872,7 @@ if __name__ == "__main__":
     Testing initialize ionosphere and msis
     This will allow someone to update the ionosphere and MSIS as needed
     """
-    chem = Chemistry()
+
     import datetime
     AltMinKm = 50.
     AltMaxKm = 150.

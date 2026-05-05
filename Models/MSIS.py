@@ -1,6 +1,9 @@
 #! /usr/bin/env python
 
 """
+
+05/02/2026: GET AP_KP from https://amisr.com/geophys_params/
+
 xxxxx
 
 Originally written  by:
@@ -89,10 +92,15 @@ MSIS Documentation:
 
 """
 
+
+
+
 import os, ctypes
 # import numpy, numpy.fftpack, numpy.interpolate, numpy.optimize
 import numpy
 import datetime
+import configparser
+
 
 
 # this is just how this needs to be defined
@@ -124,10 +132,12 @@ class MSIS_INPUT(ctypes.Structure):
 class MSIS:
 
 
-    def __init__(self):
-        self.geophys_dir = '/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP'
+    def __init__(self, inconfigfile):
+        config = configparser.ConfigParser()
+        config.read(inconfigfile)
+        self.geophys_dir = config['DEFAULT']['APKP_Path'] #'/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP'
 
-        self.inLib = '/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so'
+        self.inLib = config['DEFAULT']['MSISLib_Path'] #'/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so'
         if os.path.isfile(self.inLib):
             self.ctype_msis = ctypes.cdll.LoadLibrary(self.inLib)
         else:
@@ -351,8 +361,9 @@ class MSIS:
     def MSIS2(self, tUnix,glat,glong,Heibeg,Heiend,step, CGSorSI = 'SI'):
         # standard interface - hate it or love it...
         #tUnix,Lat,Lon,Heibeg,Heiend,step
-
-        dt1 = datetime.datetime.utcfromtimestamp(tUnix)
+        # datetime.datetime.fromtimestamp(timestamp, datetime.UTC)
+        # dt1 = datetime.datetime.utcfromtimestamp(tUnix) # deprecated
+        dt1 = datetime.datetime.fromtimestamp(tUnix,datetime.UTC) 
         altkm = numpy.arange(Heibeg,Heiend,step)
         year = dt1.year
         doy = dt1.timetuple().tm_yday
@@ -397,8 +408,9 @@ class MSIS:
 
 if __name__ == '__main__':
     # test case
-    msis = MSIS()
-    year=2010
+    # '/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so'
+    msis = MSIS('test.cfg')
+    year=2025
     doy=172
     hrUT=29000/3600.
     g_lat=60
@@ -407,8 +419,10 @@ if __name__ == '__main__':
     outDict = msis.MSIS(doy,hrUT,g_lat,g_long,year, CGSorSI=CGSorSI)
     print(outDict)
 
+    print("testing MSIS 2 \n \n \n \n \n")
     dt1970 = datetime.datetime(1970,1,1,0,0,0)
-    dt1 = datetime.datetime(2010,6,1,13,41,56)
+    dt1 = datetime.datetime(2025,6,1,13,41,56)
+    print(dt1)
     tunix1 = (dt1-dt1970).total_seconds()
     outDict2 = msis.MSIS2(tunix1,g_lat,g_long,50.,100.,1.,CGSorSI='SI')
     print(outDict2)

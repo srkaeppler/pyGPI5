@@ -1,4 +1,6 @@
  # coding: utf-8
+
+
 import numpy
 import sys
 
@@ -9,18 +11,22 @@ from scipy.constants import Boltzmann as kb
 import datetime
 import matplotlib.pyplot as plt
 import scipy.integrate
+import configparser
 
 class Ionization:
     """
 
     """
-    def __init__(self):
+    def __init__(self, inconfigfile):
         """
         Implementing Fang et al., 2010
         """
-        self.MSISDir = '/Users/srkaeppler/research/data/pyGPI5/Models/'
+        config = configparser.ConfigParser()
+        config.read(inconfigfile)
+        self.MSISDir = config['DEFAULT']['Model_Path'] #'/Users/srkaeppler/research/data/pyGPI5/Models/'
         sys.path.append(self.MSISDir)
         import MSIS
+        self.msis = MSIS.MSIS(inconfigfile)
         self.Pij = numpy.zeros([7,4])
         self.Pij = numpy.array([[1.24616e0,1.45903e0, -2.42269e-1, 5.95459e-2], \
                                 [2.23976e0, -4.22918e-7, 1.36458e-2, 2.53332e-3], \
@@ -39,7 +45,7 @@ class Ionization:
                                 [8.83195e-1, 4.31402e-2, -8.33599e-2, 1.02515e-2], \
                                 [1.90953e0, -4.74704e-2, -1.80200e-1, 2.46652e-2], \
                                 [-1.29566e0, -2.10952e-1, 2.73106e-1, -2.92752e-2]])
-        self.msis = MSIS.MSIS()
+        
         return
 
     def GravitationalAcceleration(self, z):
