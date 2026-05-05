@@ -18,17 +18,29 @@ import numpy
 import scipy.integrate
 import copy
 import sys
-sys.path.append('../Models')
-import IRI2016
-iri2016 = IRI2016.IRI2016()
-import MSIS
-msis = MSIS.MSIS()
+import configparser
+# sys.path.append('../Models')
+# import IRI2016
+# iri2016 = IRI2016.IRI2016()
+# import MSIS
+# msis = MSIS.MSIS()
 
 import matplotlib.pyplot as plt
 
 class Chemistry:
 
-    def __init__(self, SteadyStateTime = 1.e4,ISRIntegrationTime=1.e4):
+    def __init__(self, inconfigfile, SteadyStateTime = 1.e4,ISRIntegrationTime=1.e4):
+        
+        # read in from config file
+        config = configparser.ConfigParser()
+        config.read(inconfigfile)
+        sys.path.append(config['DEFAULT']['Model_Path'])
+        import IRI2016
+        iri2016 = IRI2016.IRI2016()
+        import MSIS
+        msis = MSIS.MSIS(inconfigfile)
+        self.msis = msis
+        self.iri2016 = iri2016
         self.NeIn = None
         self.Sin = None
         self.Tn = None
@@ -267,7 +279,10 @@ class Chemistry:
 
         outDict['gammaX'] = self.Calculate_GammaX(Nm, daytime=options['daytime'])
         outDict['Xbar'] = self.Calculate_Xbar(Nm)
-
+        
+        qnan = numpy.where(numpy.isnan(outDict['alphaD']) == True)[0]
+        # print('qnan',qnan)
+        outDict['alphaD'][qnan] = 1e-8
         return outDict
 
     def Dregion_Chemistry_5species(self,t,N,params):
@@ -458,6 +473,7 @@ class Chemistry:
         args[7] = ChemistryDict['gammaX'][iz]
         args[8] = ChemistryDict['Xbar'][iz]
 
+        # print('iz, args', iz, args)
 
         ode15s.set_initial_value(y0,0.).set_f_params(args)
         results = ode15s.integrate(self.SteadyState)
@@ -582,9 +598,9 @@ class Chemistry:
         i0 = izMin[q0][0]
         ScaleHeight = 2. # km
         Sout[0:i0] = Sout[i0]*numpy.exp((altkm[0:i0]-altkm[i0])/ScaleHeight)
-        print('izMin', izMin)
-        print('q0',q0)
-        print('i0',i0)
+        # print('izMin', izMin)
+        # print('q0',q0)
+        # print('i0',i0)
         # % Extend the source to low altitudes
         # ii=find(S0<=0);
         # i0=min(find(S0>0));
@@ -607,7 +623,7 @@ class Chemistry:
             y0 = self.ODE(Sout[iz],iz, ChemistryDict)
             yInitial[iz,0:4] = y0
             yInitial[iz,-1] = (y0[0]+y0[1]+y0[3])-y0[2]
-            print('iz y0,', iz, y0)
+            # print('iz,altkm,Sout, y0,', iz,altkm[iz], Sout[iz], y0)
 
         NeIn = dict()
         NeIn['Ne'] = yInitial[:,0]
@@ -661,7 +677,7 @@ class Chemistry:
         """
 
        # now run IRI to get the profile in
-        iriDict = iri2016.IRI2016(tUnix,glat,glon,AltitudeMin,AltitudeMax,deltaAltitude)
+        iriDict = self.iri2016.IRI2016(tUnix,glat,glon,AltitudeMin,AltitudeMax,deltaAltitude)
         self.NeIn = iriDict['Ne']/1e6 # needs to be in cm^-3
         self.altkm = iriDict['Altitude']
 
@@ -672,8 +688,8 @@ class Chemistry:
         doy = -1*int((tUnix/(24.*3600))%365)
         utHrs = (tUnix/3600.)%24
 
-        self.MSISDict = msis.MSIS(doy,utHrs,glat,glon,year,altkm=self.altkm, CGSorSI = 'CGS')
-        self.MSISatRef = msis.MSIS(doy,utHrs,glat,glon,year,altkm=numpy.array([15.]), CGSorSI = 'CGS')
+        self.MSISDict = self.msis.MSIS(doy,utHrs,glat,glon,year,altkm=self.altkm, CGSorSI = 'CGS')
+        self.MSISatRef = self.msis.MSIS(doy,utHrs,glat,glon,year,altkm=numpy.array([15.]), CGSorSI = 'CGS')
         # [ZZZ]needs to be user specified
         options = dict()
         options['GammaType'] = 'Temp'

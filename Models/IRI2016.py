@@ -84,7 +84,7 @@ if __name__ == "__main__":
     # DHour = 10.25
     Lat = 45.
     Lon = 228.
-    Heibeg = 65.
+    Heibeg = 60.
     Heiend = 500.
     step = 0.5
     t1 = datetime.datetime(2018,1,1,1,0,0)
@@ -100,9 +100,9 @@ if __name__ == "__main__":
         plt.semilogx(testDict['Ne'], testDict['Altitude'])
     plt.xlim([1e8,1e12])
     plt.show()
-    # print(testDict)
+    print(testDict['Ne'])
 
-    tmpNO = testDict['O+']
-    print(tmpNO)
-    tmpNO[tmpNO < 0.] = 0.
-    print(tmpNO)
+    # tmpNO = testDict['O+']
+    # print(tmpNO)
+    # tmpNO[tmpNO < 0.] = 0.
+    # print(tmpNO)
