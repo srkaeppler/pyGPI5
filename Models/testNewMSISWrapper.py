@@ -40,6 +40,11 @@ class MSIS:
             d = pymsis.calculate(dt1,glong,glat, altkm,version=0,f107s=f107, f107as=f107a,
                                  aps=numpy.array([ap]))
             
+            """
+            Comment on 6/18/2026
+            I have attempted to do some basic validation
+            """
+            
             # output part
             # [0- Total mass density (kg/m3),
             # 1-N2 # density (m-3),
@@ -61,6 +66,25 @@ class MSIS:
             MSISout['nN2'] = numpy.ravel(d[0,0,0,:,1])
             MSISout['nO2'] = numpy.ravel(d[0,0,0,:,2])
             MSISout['nN'] = numpy.ravel(d[0,0,0,:,7])
+
+            
+
+            ## pull out the nans
+            # this is keep it consistent with my wrapper
+            qnan = numpy.where(numpy.isnan(MSISout['Tn']) == True)[0]
+            MSISout['Tn'][qnan] = 0.
+            qnan = numpy.where(numpy.isnan(MSISout['MassDensity']) == True)[0]
+            MSISout['MassDensity'][qnan] = 0.
+            qnan = numpy.where(numpy.isnan(MSISout['nO']) == True)[0]
+            MSISout['nO'][qnan] = 0.
+            qnan = numpy.where(numpy.isnan(MSISout['nN2']) == True)[0]
+            MSISout['nN2'][qnan] = 0.
+            qnan = numpy.where(numpy.isnan(MSISout['nO2']) == True)[0]
+            MSISout['nO2'][qnan] = 0.
+            qnan = numpy.where(numpy.isnan(MSISout['nN']) == True)[0]
+            MSISout['nN'][qnan] = 0.
+
+
             # print('dshape', d.shape, MSISout['nN'].shape)
             # print('nN at last altitude', d[0,0,0,-1,7])
         
