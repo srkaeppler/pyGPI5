@@ -414,10 +414,12 @@ if __name__ == '__main__':
     doy=172
     hrUT=29000/3600.
     g_lat=60
-    g_long=-70
+    g_long=45#-70
     CGSorSI = 'SI'
     outDict = msis.MSIS(doy,hrUT,g_lat,g_long,year, CGSorSI=CGSorSI)
-    print(outDict)
+    # print(outDict)
+    # print('MSIS.py nO', outDict['Altitude'][-20],outDict['nO'][-20]/1e11)
+    # print('MSIS.py Tn', outDict['Altitude'][-20],outDict['Tn'][-20])
 
     print("testing MSIS 2 \n \n \n \n \n")
     dt1970 = datetime.datetime(1970,1,1,0,0,0)
@@ -425,4 +427,13 @@ if __name__ == '__main__':
     print(dt1)
     tunix1 = (dt1-dt1970).total_seconds()
     outDict2 = msis.MSIS2(tunix1,g_lat,g_long,50.,100.,1.,CGSorSI='SI')
-    print(outDict2)
+    
+    print('MSIS.py nO', outDict2['Altitude'][-30],outDict2['nO'][-30]/1e11)
+    print('MSIS.py Tn', outDict2['Altitude'][-30],outDict2['Tn'][-30])
+
+    print('MSIS.py nO', outDict2['Altitude'][-20],outDict2['nO'][-20]/1e11)
+    print('MSIS.py Tn', outDict2['Altitude'][-20],outDict2['Tn'][-20])
+
+    print('MSIS.py nO', outDict2['Altitude'][-1],outDict2['nO'][-1]/1e11)
+    print('MSIS.py Tn', outDict2['Altitude'][-1],outDict2['Tn'][-1])
+    print(outDict2['F107'],outDict2['F107a'], outDict['AP'])
