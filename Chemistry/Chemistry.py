@@ -260,6 +260,7 @@ class Chemistry:
         outDict['alphaI'] = self.Calculate_alphaI(Nm)
         outDict['beta'] = self.Calculate_Beta(Nm)
         outDict['B'] = self.Calculate_B(Nm)
+        outDict['iriDict'] = iriDict
 
         if iriDict is not None:
             outDict['alphaD'] = self.Recombination_Te(iriDict['Te'], \
