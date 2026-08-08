@@ -12,6 +12,8 @@ if there are better reaction rates to use.
 
 I am also making a pretty strategic decision to name the functions after
 the variable names found in the GPI paper equations 1-4
+
+
 """
 
 import numpy
@@ -164,7 +166,7 @@ class Chemistry:
                 error(['unknown option (alfai) = ' alfai_opt]);
         end
         """
-        print(Nm.shape[0])
+        # print(Nm.shape[0])
         alphaI = 1e-7*numpy.ones(Nm.shape) + Nm*1e-24
         return alphaI
 
@@ -260,7 +262,7 @@ class Chemistry:
         outDict['alphaI'] = self.Calculate_alphaI(Nm)
         outDict['beta'] = self.Calculate_Beta(Nm)
         outDict['B'] = self.Calculate_B(Nm)
-        outDict['iriDict'] = iriDict
+        # outDict['iriDict'] = iriDict
 
         if iriDict is not None:
             outDict['alphaD'] = self.Recombination_Te(iriDict['Te'], \
@@ -414,7 +416,7 @@ class Chemistry:
         outDict['NX'] = numpy.zeros(N)
         outDict['NposIon'] = numpy.zeros(N)
         outDict['NposCluster'] = numpy.zeros(N)
-        print('NeIn.shape', NeIn['Ne'].shape, N)
+        # print('NeIn.shape', NeIn['Ne'].shape, N)
         for iz in range(N):
 
             args[0] = Sin[iz];
@@ -665,7 +667,7 @@ class Chemistry:
                 tmpSout, tmpNeOut, y0 = self.Binary_Search(NeIn[iz],ChemistryDict, indx)
                 Sout[iz] = tmpSout
                 NeOut[iz] = y0[0]
-                print('Ne2QZ iz,indx, IRIiz', iz,indx,altkm[iz],iriAltGrid[indx], NeIn[iz],y0[0], tmpSout)
+                # print('Ne2QZ iz,indx, IRIiz', iz,indx,altkm[iz],iriAltGrid[indx], NeIn[iz],y0[0], tmpSout)
         return Sout, NeOut
 
 
@@ -722,8 +724,9 @@ class Chemistry:
             print('IntegrationTime', self.ISRIntTime)
         iriAltGrid = self.altkm
         qin = numpy.zeros(qz.shape[0])
-        print('qz.shape, altkm.shape', qz.shape, altkm.shape)
-        print('self.y0, self.altkm', self.y0['Ne'].shape, self.altkm.shape)
+        #diagnostic print statements
+        # print('qz.shape, altkm.shape', qz.shape, altkm.shape)
+        # print('self.y0, self.altkm', self.y0['Ne'].shape, self.altkm.shape)
         y0 = dict()
         for ikeys in self.y0.keys():
             y0[ikeys] = numpy.zeros(qz.shape[0])
@@ -751,19 +754,23 @@ class Chemistry:
                             y0[ikeys][iz] = self.y0[ikeys][indx]
 
                         for ikeys in self.DregionChem.keys():
+                            #diagnostic print statements
+                            #print(ikeys, iz, indx)
                             DregionChemDict[ikeys][iz] = self.DregionChem[ikeys][indx]
                         # y0['NnegIon'][iz] = self.y0['NnegIon'][indx]
                         # y0['NposCluster'][iz] = self.y0['NposCluster'][indx]
                         # y0['NX'][iz] = self.y0['NX'][indx]
                         # y0['NposIon'][iz] = self.y0['NposIon'][indx]
 
-                        print(altkm[iz],iriAltGrid[indx],qz[iz],self.Sin[indx])
+                        # diagnostic print statements
+                        # print(altkm[iz],iriAltGrid[indx],qz[iz],self.Sin[indx])
 
-                    print('qin.shape,', qin.shape, y0['Ne'].shape, self.DregionChem['B'].shape)
+                    # diagnostic print statements
+                    # print('qin.shape,', qin.shape, y0['Ne'].shape, self.DregionChem['B'].shape)
 
                     results = self.Integrate_ODE(y0,qin,DregionChemDict,IntType='5species')
-                    print (results['Ne'].shape)
-                    print ('###############################')
+                    # print (results['Ne'].shape)
+                    # print ('###############################')
                     #results = self.ODE(self.y0,qin,self.DregionChem,IntType='5species')
                 else:
                     raise ValueError("Ionization and altitude sizes do not agree")
