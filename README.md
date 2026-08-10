@@ -1,11 +1,13 @@
 # pyGPI5
-Simple python D-region Ionospheric Chemistry model
+A simplified Python time dependent D-region and E-region ionospheric chemistry model based on the Glukov, Pasko, and Inan (GPI) implementation (1991) that was updated by Lehtinen in 2007.
+
+Note: this model is valid below altitudes of 200 km where molecular chemistry dominates in the ionosphere.  Atomic Oxygen is considered in the model, but diffusion is not calculated expliclity.  If you use this code for F-region physics, you use it at your own risk.  This is your disclaimer.  F-region chemistry and diffusion may eventually be included in future releases.
 
 # Version 
-Version: 2.0
-Updated: 19 June 2026
+Version: 2.1
+Updated: 10 August 2026
 
-Please use Version 2.0 of the code
+Please use Version 2.1 of the code
 
 # Installation
 1. make a python enviornment: ```python -m venv Name_Of_Enviornment``` 
