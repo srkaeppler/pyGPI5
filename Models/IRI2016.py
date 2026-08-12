@@ -4,6 +4,7 @@ import datetime
 import os
 import iricore
 
+
 """
 Updated on 04/22/2026
 my old wrapper which is now labeled as IRI2016.bak will not work anymore because f2py got sunsetted.
@@ -49,7 +50,7 @@ class IRI2016:
         zaltkm = numpy.array([AltitudeMin, AltitudeMax, deltaAltitude])
 
         # set the date time
-        dt = datetime.datetime.fromtimestamp(tUnix)#.astimezone(datetime.timezone.utc)
+        dt = datetime.datetime.utcfromtimestamp(tUnix)#.astimezone(datetime.timezone.utc)
         print(dt)
         
 
