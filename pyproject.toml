@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygpi5"
+version = "2.1.0"
+description = "A simplified Python time dependent D-region and E-region ionospheric chemistry model based on the Glukov, Pasko, and Inan (GPI) implementation (1991) that was updated by Lehtinen in 2007."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Steve Kaeppler" }
+]
+dependencies = [
+  "contourpy>=1.3.3",
+  "cycler>=0.12.1",
+  "fonttools>=4.63.0",
+  "fortranformat>=2.0.3",
+  "iricore>=1.9.0",
+  "kiwisolver>=1.5.0",
+  "matplotlib>=3.11.0",
+  "numpy>=1.26.3",
+  "packaging>=26.2",
+  "pillow>=12.2.0",
+  "pymap3d>=3.2.0",
+  "pymsis>=0.12.0",
+  "pyparsing>=3.3.2",
+  "python-dateutil>=2.9.0.post0",
+  "scipy>=1.15.3",
+  "six>=1.17.0",
+]
+
+[dependency-groups]
+dev = [
+  "contourpy==1.3.3",
+  "cycler==0.12.1",
+  "fonttools==4.63.0",
+  "fortranformat==2.0.3",
+  "iricore==1.9.0",
+  "kiwisolver==1.5.0",
+  "matplotlib==3.11.0",
+  "numpy==1.26.3",
+  "packaging==26.2",
+  "pillow==12.2.0",
+  "pymap3d==3.2.0",
+  "pymsis==0.12.0",
+  "pyparsing==3.3.2",
+  "python-dateutil==2.9.0.post0",
+  "scipy==1.15.3",
+  "six==1.17.0",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["Chemistry*", "Ionization*", "Models*"]
+
+[tool.pygpi5.paths]
+# Update these three paths to match your local machine.
+apkp_path = "/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP/"
+msislib_path = "/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so"
+model_path = "/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/"
