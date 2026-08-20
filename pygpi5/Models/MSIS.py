@@ -101,7 +101,7 @@ import numpy
 import datetime
 import configparser
 
-
+import pygpi5
 
 # this is just how this needs to be defined
 class MSIS_OUTPUT(ctypes.Structure):
@@ -132,12 +132,10 @@ class MSIS_INPUT(ctypes.Structure):
 class MSIS:
 
 
-    def __init__(self, inconfigfile):
-        config = configparser.ConfigParser()
-        config.read(inconfigfile)
-        self.geophys_dir = config['DEFAULT']['APKP_Path'] #'/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP'
+    def __init__(self):
+        self.geophys_dir = pygpi5.APKP_Path
 
-        self.inLib = config['DEFAULT']['MSISLib_Path'] #'/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so'
+        self.inLib = pygpi5.MSISLib_Path
         if os.path.isfile(self.inLib):
             self.ctype_msis = ctypes.cdll.LoadLibrary(self.inLib)
         else:

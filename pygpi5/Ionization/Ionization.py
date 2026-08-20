@@ -4,8 +4,6 @@
 import numpy
 import sys
 
-# sys.path.append('../Models/')
-# import MSIS
 from scipy.constants import G as G
 from scipy.constants import Boltzmann as kb
 import datetime
@@ -13,20 +11,18 @@ import matplotlib.pyplot as plt
 import scipy.integrate
 import configparser
 
+import pygpi5
+import pygpi5.Models.MSIS as MSIS
+
 class Ionization:
     """
 
     """
-    def __init__(self, inconfigfile):
+    def __init__(self):
         """
         Implementing Fang et al., 2010
         """
-        config = configparser.ConfigParser()
-        config.read(inconfigfile)
-        self.MSISDir = config['DEFAULT']['Model_Path'] #'/Users/srkaeppler/research/data/pyGPI5/Models/'
-        sys.path.append(self.MSISDir)
-        import MSIS
-        self.msis = MSIS.MSIS(inconfigfile)
+        self.msis = MSIS.MSIS()
         self.Pij = numpy.zeros([7,4])
         self.Pij = numpy.array([[1.24616e0,1.45903e0, -2.42269e-1, 5.95459e-2], \
                                 [2.23976e0, -4.22918e-7, 1.36458e-2, 2.53332e-3], \
@@ -333,11 +329,6 @@ class Ionization:
 
 
         return qZ
-
-
-
-
-
 
 
 if __name__ == '__main__':

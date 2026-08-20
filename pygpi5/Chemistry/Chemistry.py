@@ -15,34 +15,20 @@ the variable names found in the GPI paper equations 1-4
 
 
 """
+import copy
+import sys
 
 import numpy
 import scipy.integrate
-import copy
-import sys
-import configparser
-# sys.path.append('../Models')
-# import IRI2016
-# iri2016 = IRI2016.IRI2016()
-# import MSIS
-# msis = MSIS.MSIS()
-
 import matplotlib.pyplot as plt
 
-class Chemistry:
+import pygpi5.Models.MSIS as MSIS
+import pygpi5.Models.IRI2016 as IRI2016
 
-    def __init__(self, inconfigfile, SteadyStateTime = 1.e4,ISRIntegrationTime=1.e4):
-        
-        # read in from config file
-        config = configparser.ConfigParser()
-        config.read(inconfigfile)
-        sys.path.append(config['DEFAULT']['Model_Path'])
-        import IRI2016
-        iri2016 = IRI2016.IRI2016()
-        import MSIS
-        msis = MSIS.MSIS(inconfigfile)
-        self.msis = msis
-        self.iri2016 = iri2016
+class Chemistry:
+    def __init__(self, SteadyStateTime = 1.e4,ISRIntegrationTime=1.e4):
+        self.msis = MSIS.MSIS()
+        self.iri2016 = IRI2016.IRI2016()
         self.NeIn = None
         self.Sin = None
         self.Tn = None
@@ -56,7 +42,6 @@ class Chemistry:
         self.nSteps = 10000
         self.ISRIntTime = ISRIntegrationTime#60. # seconds
         return
-
 
 
     def Recombination_Te(self,Te, CO2 = None, CNO=None,CO=None):
