@@ -3,3 +3,5 @@ uv.lock
 __pycache__/
 *.so
 *.o
+*.pyc
+__pycache__/

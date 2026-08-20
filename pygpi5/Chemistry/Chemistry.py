@@ -85,13 +85,13 @@ class Chemistry:
         CO2[CO2 < 0] = 1e-8
 
         if len(CO2) > 0:
-            assert (CO2.shape[0] == Te.shape[0], "CO Shape is not the same as Te")
+            assert CO2.shape[0] == Te.shape[0], "CO Shape is not the same as Te"
             alpha = (CO2/100.)*a_O2 + alpha
         if len(CNO) > 0:
-            assert (CNO.shape[0] == Te.shape[0], "CNO Shape is not the same as Te")
+            assert CNO.shape[0] == Te.shape[0], "CNO Shape is not the same as Te"
             alpha = (CNO/100.)*a_NO + alpha
         if len(CO) > 0:
-            assert (CO.shape[0] == Te.shape[0], "CO Shape is not the same as Te")
+            assert CO.shape[0] == Te.shape[0], "CO Shape is not the same as Te"
             alpha = (CO/100.)*a_O + alpha
 
         return alpha

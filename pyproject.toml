@@ -20,7 +20,7 @@ dependencies = [
   "iricore>=1.9.0",
   "kiwisolver>=1.5.0",
   "matplotlib>=3.11.0",
-  "numpy>=1.26.3,<2.0.0",
+  "numpy>=1.26.3",
   "packaging>=26.2",
   "pillow>=12.2.0",
   "pymap3d>=3.2.0",
@@ -55,10 +55,4 @@ dev = [
 include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["Chemistry*", "Ionization*", "Models*"]
-
-[tool.pygpi5.paths]
-# Update these three paths to match your local machine.
-apkp_path = "/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/AP_KP/"
-msislib_path = "/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/nrlmsise00/libnrlmsise-00.so"
-model_path = "/Users/srkaeppler/research/data/pygpi5_dev/pyGPI5/Models/"
+include = ["pygpi5*"]
