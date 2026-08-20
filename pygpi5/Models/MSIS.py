@@ -133,9 +133,9 @@ class MSIS:
 
 
     def __init__(self):
-        self.geophys_dir = pygpi5.APKP_Path
+        self.geophys_dir = pygpi5.apkp_dir
 
-        self.inLib = pygpi5.MSISLib_Path
+        self.inLib = pygpi5.msislib_path
         if os.path.isfile(self.inLib):
             self.ctype_msis = ctypes.cdll.LoadLibrary(self.inLib)
         else:
