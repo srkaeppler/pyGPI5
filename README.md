@@ -10,27 +10,62 @@ Updated: 10 August 2026
 Please use Version 2.1 of the code
 
 # Installation
-1. make a python enviornment: ```python -m venv Name_Of_Enviornment``` 
+1. Create a Python environment, for example:
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
 
-2. Clone the repository: ```git clone https://github.com/srkaeppler/pyGPI5```
+2. Clone the repository:
+```bash
+git clone https://github.com/srkaeppler/pyGPI5
+cd pyGPI5
+```
 
-3. Activate into your python enviornment and install using pip: ```pip install -r requirements.txt```
+3. Install the pygpi5 package in your virtual environment:
+```bash
+pip install -e .
+```
+
+or if you need to install with exact dependencies run:
+```bash
+pip install -e ".[dev]"
+```
+
+If you use uv, the equivalent workflow is:
+```bash
+uv sync --no-dev
+```
+
+or if you need to install with exact dependencies run:
+```bash
+uv sync --group dev
+```
 
 Now you need to get the MSIS wrapper working.
 
-4. Make sure you have ```gcc``` installed and navigate to the ```nrlmsise00``` subdirectory in the ```Models``` directory.
+4. Make sure you have `gcc` installed and navigate to `pygpi5/Models/nrlmsise00`.
 
-5. Run ```make ``` you should see the code compile.  You should also notice either a ```.so``` or ```.dll``` file be produced depending on the operating system (I mainly use linux and mac).  You can also ```./nrlmsise-test```. If you produce text outputs and not errors, that mean it compiled correctly.
+5. Run:
+```bash
+make
+./nrlmsise-test
+```
+You should see either a `.so` or `.dll` generated depending on the operating system.
 
-6. Update AP/KP as needed.  In the ```Model``` directory, you should download the AP/KP files which you can find at: ```https://amisr.com/geophys_params/``` This is particularly important if you are doing something very current, i.e., in 2026. I periodically update these files. 
+6. Update AP/KP as needed. In `pygpi5/Models/AP_KP`, download/update files from:
+`https://amisr.com/geophys_params/`
 
-7. Update the config file.  In the main directory, you will now need to update ```config.cfg``` file.  This is a personal choice I am imposing onto you, but I give the full path to the location of the ```libnrlmsise-00.so``` file, the directory containing the AP/KP files, and the ```Model``` directory.  There are probably better ways to do this and feel free to contact me with those better ways, but this works for me.  
+7. Path handling is now package-relative in `pygpi5/__init__.py` (`apkp_dir`, `msislib_path`, `model_dir`, `plot_dir`), so manual absolute-path edits in `config.cfg` are no longer required for these paths.
 
-8. You can now run the ```RunExample.ipynb``` which should reproduce Figures 1-4 in the directory.  BE AWARE THAT YOU WILL OVERWRITE THE FIGURES!  ```RunExample_test.ipynb``` does the same thing and is a little bit safer in that you will not overwrite the figures. This reproduces the Figures in the[pyGPI5 Paper](https://www.frontiersin.org/journals/astronomy-and-space-sciences/articles/10.3389/fspas.2022.1028042/full)
+8. You can now run `tutorials/RunExamples.ipynb`, which should reproduce Figures 1-4 from in the [pyGPI5 Paper](https://www.frontiersin.org/journals/astronomy-and-space-sciences/articles/10.3389/fspas.2022.1028042/full) and save them to the `plots/` directory (and overwrite existing plots).
 
 ## Notes on Packages and other items
-Note the requirements are a minimal set of requirements and does not include ```jupyter``` which is strongly recommended.  Also note that the ```numpy==1.26.3```, ```scipy==1.15.3```, and ```iricore==1.9.0``` which do not conflict with each other.  Additionally ```pymsis==0.12``` is also included but I have not gotten pyMSIS properly wrapped yet(as of June 2026).  ```iricore``` is from 
-```https://github.com/MIST-Experiment/iricore``` and pyMSIS corresponds to ```https://github.com/SWxTREC/pymsis```
+Dependencies are managed in `pyproject.toml` (not `requirements.txt`) and include `numpy>=1.26.3`, `scipy>=1.15.3`, `iricore>=1.9.0`, and `pymsis>=0.12.0`.
+
+`jupyter` is still not included by default and is strongly recommended for tutorials.
+
+`iricore` is from `https://github.com/MIST-Experiment/iricore` and pyMSIS corresponds to `https://github.com/SWxTREC/pymsis`.
 
 There are both IRI and MSIS wrappers in the ```Models``` directory.  However in 2026, I discovered that newer versions of ```numpy``` required the use of ```meson``` over what I had done with ```f2py``` which were the original wrappers at least for IRI.  Instead of actually learning ```meson``` I decided to look for a different IRI wrapper and found ```iricore``` which is a drop in replacement.  If you have interest in using the original wrappers for IRI, I recommend you contact me.
 
