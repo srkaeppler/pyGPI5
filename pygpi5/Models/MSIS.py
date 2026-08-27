@@ -162,28 +162,25 @@ class MSIS:
 
         if os.path.exists(os.path.join(self.geophys_dir,str(year)))==False:
             year=year-1
-        # if os.path.exists(os.path.join(self.geophys_dir,str(year)))==False:
-        #     raise IOError, print('Geophys param directory %s/%s does not exist.' % (geophys_dir, str(year)))
 
         year=str(year)
 
-        f = open(os.path.join(self.geophys_dir,year))
-        lines = f.readlines()
+        with open(os.path.join(self.geophys_dir, year)) as f:
+            lines = f.readlines()
         if os.path.exists(os.path.join(self.geophys_dir,str(int(year)-1)))==True:
-            f = open(os.path.join(self.geophys_dir,str(int(year)-1)))
-            lines_py = f.readlines()
+            with open(os.path.join(self.geophys_dir, str(int(year)-1))) as f:
+                lines_py = f.readlines()
         else:
             lines_py=[]
         if os.path.exists(os.path.join(self.geophys_dir,str(int(year)+1)))==True:
-            f = open(os.path.join(self.geophys_dir,str(int(year)+1)))
-            lines_ny = f.readlines()
+            with open(os.path.join(self.geophys_dir, str(int(year)+1))) as f:
+                lines_ny = f.readlines()
         else:
             lines_ny=[]
 
         if len(lines)<doy:
             doy=len(lines)
 
-        print(len(lines))
         # F!07d - previous day
         if doy==1:
             try:
@@ -246,11 +243,11 @@ class MSIS:
         for aa in range(imin,imax):
             try:
                 if aa<0:
-                	lines2.append(lines_py[len(lines_py)+aa])
+                    lines2.append(lines_py[len(lines_py)+aa])
                 elif aa>=len(lines):
-                	lines2.append(lines_ny[aa-len(lines)])
+                    lines2.append(lines_ny[aa-len(lines)])
                 else:
-                	lines2.append(lines[aa])
+                    lines2.append(lines[aa])
             except:
                 ''
 

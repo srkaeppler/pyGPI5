@@ -265,7 +265,6 @@ class Ionization:
             """
             Deprecated
             """
-            #qZsimp[ih] = scipy.integrate.simps(qZE[ih,:], E/1000.)
             qZsimp[ih] = scipy.integrate.simpson(qZE[ih,:], x=E/1000.) # new call
         # this needs to be normalized by a dimensionless quantity or I am not doing something
         # ahead of time
