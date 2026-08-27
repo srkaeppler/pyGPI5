@@ -26,7 +26,7 @@ import pygpi5.Models.MSIS as MSIS
 import pygpi5.Models.IRI2016 as IRI2016
 
 class Chemistry:
-    def __init__(self, SteadyStateTime = 1.e4,ISRIntegrationTime=1.e4):
+    def __init__(self, SteadyStateTime = 1.e4,ISRIntegrationTime=1.e4, verbose=False):
         self.msis = MSIS.MSIS()
         self.iri2016 = IRI2016.IRI2016()
         self.NeIn = None
@@ -41,6 +41,7 @@ class Chemistry:
         self.SteadyState = SteadyStateTime
         self.nSteps = 10000
         self.ISRIntTime = ISRIntegrationTime#60. # seconds
+        self.verbose = verbose
         return
 
 
@@ -151,7 +152,6 @@ class Chemistry:
                 error(['unknown option (alfai) = ' alfai_opt]);
         end
         """
-        # print(Nm.shape[0])
         alphaI = 1e-7*numpy.ones(Nm.shape) + Nm*1e-24
         return alphaI
 
@@ -269,7 +269,6 @@ class Chemistry:
         outDict['Xbar'] = self.Calculate_Xbar(Nm)
         
         qnan = numpy.where(numpy.isnan(outDict['alphaD']) == True)[0]
-        # print('qnan',qnan)
         outDict['alphaD'][qnan] = 1e-8
         return outDict
 
@@ -401,7 +400,6 @@ class Chemistry:
         outDict['NX'] = numpy.zeros(N)
         outDict['NposIon'] = numpy.zeros(N)
         outDict['NposCluster'] = numpy.zeros(N)
-        # print('NeIn.shape', NeIn['Ne'].shape, N)
         for iz in range(N):
 
             args[0] = Sin[iz];
@@ -422,7 +420,6 @@ class Chemistry:
 
             ode15s.set_initial_value(y0,0.).set_f_params(args)
             results = ode15s.integrate(self.ISRIntTime)
-            # print('iz', iz, results)
             outDict['Ne'][iz] = results[0]
             outDict['NnegIon'][iz] = results[1]
             outDict['NposCluster'][iz] = results[2]
@@ -461,8 +458,6 @@ class Chemistry:
         args[7] = ChemistryDict['gammaX'][iz]
         args[8] = ChemistryDict['Xbar'][iz]
 
-        # print('iz, args', iz, args)
-
         ode15s.set_initial_value(y0,0.).set_f_params(args)
         results = ode15s.integrate(self.SteadyState)
 
@@ -471,7 +466,7 @@ class Chemistry:
     def Binary_Search(self, NeTarget,ChemistryDict, iz):
 
 
-        # print 'NeTarget, NeTest', NeTarget, NeTest
+        
 
         # find zero crossing
         S = 1.0
@@ -495,9 +490,7 @@ class Chemistry:
                 PrevSign = copy.copy(Sign)
 
             if numpy.sign(Sign) != numpy.sign(PrevSign):
-                # print 'stop'
                 break
-
 
             kk=+1
 
@@ -506,22 +499,16 @@ class Chemistry:
                 break
             PrevSign = copy.copy(Sign)
             Neprev = copy.copy(NeTest)
-            # print kk, S, NeTest, NeTarget, Sign, S, Sprev
 
         # just to check
         NeS = self.ODE(S,iz, ChemistryDict)[0]
         NeSprev = self.ODE(Sprev,iz, ChemistryDict)[0]
-        # print 'S', S,NeS, NeTest
-        # print 'Sprev',Sprev, NeSprev, Neprev
-        # print 'NeTarget', NeTarget
 
         # now at this point I can do the whole dividing up and finding
         Shigh = numpy.max([S,Sprev])
         Slow = numpy.min([S,Sprev])
         Nehigh = numpy.max([NeS, NeSprev])
         Nelow = numpy.min([NeS, NeSprev])
-
-        # print 'Nehigh', Nehigh, Nelow
 
         # # go from high to low
         kk = 0
@@ -533,12 +520,12 @@ class Chemistry:
             Ne = self.ODE(S1,iz, ChemistryDict)[0]
             dNe = numpy.abs(Ne-NeTarget)
             dNe2 = (Shigh-Slow)/Shigh
-            # print 'S1', S1
-            # print 'Ne', Ne
-            # print 'Nelow, Nehigh', Nelow, Nehigh
-            # print 'dNe',i, dNe, dNe2, Ne, NeTarget
+            
+            
+            
+            
             if dNe2 < 1e-6:
-                # print 'stopping'
+                
                 break
 
             if Ne < NeTarget:
@@ -570,7 +557,7 @@ class Chemistry:
 
 
         for iz in range(altkm.shape[0]):
-            # print 'iz, IRIiz', iz, IRIin[iz]
+            
             if IRIin[iz] < 0:
 
                 continue
@@ -586,15 +573,6 @@ class Chemistry:
         i0 = izMin[q0][0]
         ScaleHeight = 2. # km
         Sout[0:i0] = Sout[i0]*numpy.exp((altkm[0:i0]-altkm[i0])/ScaleHeight)
-        # print('izMin', izMin)
-        # print('q0',q0)
-        # print('i0',i0)
-        # % Extend the source to low altitudes
-        # ii=find(S0<=0);
-        # i0=min(find(S0>0));
-        # HS=2; % from figures in [R]
-        # S0(ii)=S0(i0)*exp((z(ii)-z(i0))/HS);
-        #
 
         # % The cosmic-ray source
         # hcr=getvaluefromdict(options,'hcr',15);
@@ -611,7 +589,6 @@ class Chemistry:
             y0 = self.ODE(Sout[iz],iz, ChemistryDict)
             yInitial[iz,0:4] = y0
             yInitial[iz,-1] = (y0[0]+y0[1]+y0[3])-y0[2]
-            # print('iz,altkm,Sout, y0,', iz,altkm[iz], Sout[iz], y0)
 
         NeIn = dict()
         NeIn['Ne'] = yInitial[:,0]
@@ -652,12 +629,19 @@ class Chemistry:
                 tmpSout, tmpNeOut, y0 = self.Binary_Search(NeIn[iz],ChemistryDict, indx)
                 Sout[iz] = tmpSout
                 NeOut[iz] = y0[0]
-                # print('Ne2QZ iz,indx, IRIiz', iz,indx,altkm[iz],iriAltGrid[indx], NeIn[iz],y0[0], tmpSout)
         return Sout, NeOut
 
 
 
-    def Set_Inital_Ionization(self,tUnix,glat,glon,AltitudeMin,AltitudeMax,deltaAltitude):
+    def Set_Inital_Ionization(
+            self,
+            tUnix,
+            glat,
+            glon,
+            AltitudeMin,
+            AltitudeMax,
+            deltaAltitude,
+            ):
         """
         This function will be run outside of the main run routine only because
         I want to give control to the user about how often to update the initial
@@ -706,12 +690,13 @@ class Chemistry:
         """
         if IntegrationTime != 0:
             self.ISRIntTime = IntegrationTime
-            print('IntegrationTime', self.ISRIntTime)
+            if self.verbose:
+                print('IntegrationTime', self.ISRIntTime)
         iriAltGrid = self.altkm
         qin = numpy.zeros(qz.shape[0])
-        #diagnostic print statements
-        # print('qz.shape, altkm.shape', qz.shape, altkm.shape)
-        # print('self.y0, self.altkm', self.y0['Ne'].shape, self.altkm.shape)
+        if self.verbose:
+            print('qz.shape, altkm.shape', qz.shape, altkm.shape)
+            print('self.y0, self.altkm', self.y0['Ne'].shape, self.altkm.shape)
         y0 = dict()
         for ikeys in self.y0.keys():
             y0[ikeys] = numpy.zeros(qz.shape[0])
@@ -719,12 +704,8 @@ class Chemistry:
         DregionChemDict = dict()
         for ikeys in self.DregionChem.keys():
             DregionChemDict[ikeys] = numpy.zeros(qz.shape[0])
-        # y0['NnegIon'] = numpy.zeros(qz.shape[0])
-        # y0['NposCluster'] = numpy.zeros(qz.shape[0])
-        # y0['NX'] = numpy.zeros(qz.shape[0])
-        # y0['NposIon'] = numpy.zeros(qz.shape[0])
-        if TypeName == 'Dregion':
 
+        if TypeName == 'Dregion':
             # check if the initial ionization was calculated
             # again put everything onto the same altitude grid and run the model.
             if self.Sin is not None:
@@ -739,24 +720,17 @@ class Chemistry:
                             y0[ikeys][iz] = self.y0[ikeys][indx]
 
                         for ikeys in self.DregionChem.keys():
-                            #diagnostic print statements
-                            #print(ikeys, iz, indx)
+                            if self.verbose:
+                                print(ikeys, iz, indx)
                             DregionChemDict[ikeys][iz] = self.DregionChem[ikeys][indx]
-                        # y0['NnegIon'][iz] = self.y0['NnegIon'][indx]
-                        # y0['NposCluster'][iz] = self.y0['NposCluster'][indx]
-                        # y0['NX'][iz] = self.y0['NX'][indx]
-                        # y0['NposIon'][iz] = self.y0['NposIon'][indx]
 
-                        # diagnostic print statements
-                        # print(altkm[iz],iriAltGrid[indx],qz[iz],self.Sin[indx])
+                        if self.verbose:
+                            print(altkm[iz],iriAltGrid[indx],qz[iz],self.Sin[indx])
 
-                    # diagnostic print statements
-                    # print('qin.shape,', qin.shape, y0['Ne'].shape, self.DregionChem['B'].shape)
+                    if self.verbose:
+                        print('qin.shape,', qin.shape, y0['Ne'].shape, self.DregionChem['B'].shape)
 
                     results = self.Integrate_ODE(y0,qin,DregionChemDict,IntType='5species')
-                    # print (results['Ne'].shape)
-                    # print ('###############################')
-                    #results = self.ODE(self.y0,qin,self.DregionChem,IntType='5species')
                 else:
                     raise ValueError("Ionization and altitude sizes do not agree")
 
@@ -770,13 +744,8 @@ class Chemistry:
                     results = self.Integrate_ODE(self.y0,qz,self.DregionChem,IntType='5species')
                 else:
                     raise ValueError("Ionization and altitude sizes do not agree")
-
             else:
                 raise ValueError ('Initial Ionization was not set. Run: Set_Inital_Ionization')
-
-
-
-
         return results
 
 if __name__ == "__main__":
@@ -826,23 +795,6 @@ if __name__ == "__main__":
     plt.figure(101)
     plt.semilogx(dataIn['Nspec'][:,-1,0], dataIn['z'], 'b-', label='Ne')
     plt.semilogx(NeOut['Ne'], dataIn['z'], 'r-')
-    #
-    # plt.figure(2)
-    # plt.semilogx(dataIn['Nspec'][:,-1,1], dataIn['z'], 'b-', label='NnegIon')
-    # plt.semilogx(NeOut['NnegIon'], dataIn['z'], 'r-')
-    #
-    # plt.figure(3)
-    # plt.semilogx(dataIn['Nspec'][:,-1,2], dataIn['z'], 'b-', label='NposCluster')
-    # plt.semilogx(NeOut['NposCluster'], dataIn['z'], 'r-')
-    #
-    # plt.figure(4)
-    # plt.semilogx(dataIn['Nspec'][:,-1,3], dataIn['z'], 'b-', label='NX')
-    # plt.semilogx(NeOut['NX'], dataIn['z'], 'r-')
-    #
-    # plt.figure(5)
-    # plt.semilogx(dataIn['Nspec'][:,-1,4], dataIn['z'], 'b-', label='NposIon')
-    # plt.semilogx(NeOut['NposIon'], dataIn['z'], 'r-')
-    # plt.show()
 
     """
     Test the finding the background distribution
@@ -935,7 +887,7 @@ if __name__ == "__main__":
     # plt.semilogx(chem.MSISDict['Tn'], chem.altkm)
     # plt.semilogx(Tn, dataIn['z'])
     #
-    # print 'gammaX', DregionChem['gammaX'],chem.DregionChem['gammaX']
+    
     # kk = 4
     # for ikey in chem.DregionChem.keys():
     #     plt.figure(kk)

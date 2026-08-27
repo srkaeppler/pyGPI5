@@ -94,17 +94,13 @@ class Ionization:
         rhoz = MassDensity*(1e3/1e6) # g/cm^3
         Hzcm = Hz*100.
         deltaE = 0.035 #keV
-        # Q0 = Q0/1000.
         Q0 = Q0*6.242e11/1000. # conversion to keV/cm2/s
-        # print 'Hzcm', Hzcm
-        # print 'EkeV', EkeV
 
         y = (2./EkeV)*(rhoz*Hzcm/6e-6)**0.7 # equation 1
         Ci = self.CalculateCi(EkeV)
         f = Ci[0]*(y**Ci[1])*numpy.exp(-Ci[2]*(y**Ci[3]))+\
             Ci[4]*(y**Ci[5])*numpy.exp(-Ci[6]*(y**Ci[7])) # equation 4
 
-        # print f
         qz = f*Q0/deltaE/Hzcm # equation 3 which is wrong, look in fang 2008, eq2
         return qz, y, f
 
@@ -116,8 +112,6 @@ class Ionization:
                 Mass Density (kg/m^3)
             Fang 2008 paper
         """
-
-        #print 'In Fang Model Maxwellian Q0 E0', Q0,E0
         # do all of the conversions here
         zcm = altkm*(1000.*100.) # cm
         EkeV = E0/1000. # KeV
@@ -126,15 +120,12 @@ class Ionization:
         deltaE = 0.035 #keV
         # Q0 = Q0/1000.
         Q0 = Q0*6.242e11/1000. # conversion to keV/cm2/s
-        # print 'Hzcm', Hzcm
-        # print 'EkeV', EkeV
 
         y = (1./EkeV)*(rhoz*Hzcm/4e-6)**0.606 # equation 4
         Ci = self.CalculateCiMaxwellian(EkeV)
         f = Ci[0]*(y**Ci[1])*numpy.exp(-Ci[2]*(y**Ci[3]))+\
             Ci[4]*(y**Ci[5])*numpy.exp(-Ci[6]*(y**Ci[7])) # equation 4
 
-        # print f
         qz = (Q0*f)/(2.*deltaE*Hzcm) # equation 3 which is wrong, look in fang 2008, eq2
         return qz, y, f
 
@@ -152,22 +143,15 @@ class Ionization:
         rhoz = MassDensity*(1e3/1e6) # g/cm^3
         Hzcm = Hz*100.
         deltaE = 0.035 #keV
-        # Q0 = Q0/1000.
         Q0 = Q0*6.242e11/1000. # conversion to keV/cm2/s
-        # print 'Hzcm', Hzcm
-        # print 'EkeV', EkeV
-
+       
         y = (2./EkeV)*(rhoz*Hzcm/6e-6)**0.7 # equation 1
         Ci = self.CalculateCi(EkeV)
         f = Ci[0]*(y**Ci[1])*numpy.exp(-Ci[2]*(y**Ci[3]))+\
             Ci[4]*(y**Ci[5])*numpy.exp(-Ci[6]*(y**Ci[7])) # equation 4
 
-        # print f
         qz = f*Q0/deltaE/Hzcm # equation 3 which is wrong, look in fang 2008, eq2
         return qz, y, f
-
-
-
 
     def RunMSISFang(self, tUnix, glat,glon,altkm = numpy.arange(80,150,1)):
         """
@@ -183,13 +167,10 @@ class Ionization:
         Tn = outDictSI['Tn'] # in Kelvin
         MassDensity = outDictSI['MassDensity'] # kg/m^3
         AverageMass = outDictSI['AverageMass'] # kg
-        # print 'Mass Density', MassDensity
-        # print 'AverageMass', AverageMass/1.6726219e-27
+
         # have to have a what to do if not sent in
         gz = self.GravitationalAcceleration(altkm/1000.)
         Hz = kb*Tn/(gz*AverageMass)
-
-
         return MassDensity, Hz
 
     def MaxwellianFlux(self, E, Q0, E0):
@@ -200,10 +181,8 @@ class Ionization:
 
         Output: ergs/cm^2/s
         """
-
         NumFlux = Q0*E*numpy.exp(-E/E0)/2./E0**3
         EnergyFlux = E*E*NumFlux
-
         return NumFlux,EnergyFlux
 
     def MakeFangModelMatrix(self, EeV,tUnix, glat,glon,altkm = numpy.arange(80,150,1)):
@@ -220,8 +199,6 @@ class Ionization:
         Tn = outDictSI['Tn'] # in Kelvin
         MassDensity = outDictSI['MassDensity'] # kg/m^3
         AverageMass = outDictSI['AverageMass'] # kg
-        # print 'Mass Density', MassDensity
-        # print 'AverageMass', AverageMass/1.6726219e-27
         # have to have a what to do if not sent in
         gz = self.GravitationalAcceleration(altkm/1000.)
         Hz = kb*Tn/(gz*AverageMass)
@@ -232,14 +209,9 @@ class Ionization:
         rhoz = MassDensity*(1e3/1e6) # g/cm^3
         Hzcm = Hz*100.
         deltaE = 0.035 #keV
-        # Q0 = Q0/1000.
-        # Q0 = Q0*6.242e11/1000. # conversion to keV/cm2/s
-        # print 'Hzcm', Hzcm
-        # print 'EkeV', EkeV
 
-        # A is a matrix that is  N altitude elements by M energy elements
+        # A is a matrix that is N altitude elements by M energy elements
         A = numpy.zeros([altkm.shape[0],EkeV.shape[0]-1,])
-
 
         for iEnergy in range(EkeV.shape[0]-1):
             y = (2./EkeV[iEnergy])*(rhoz*Hzcm/6e-6)**0.7 # equation 1
@@ -250,7 +222,6 @@ class Ionization:
             tmpqz = (f*EkeV[iEnergy]*dE)/deltaE/Hzcm
             A[:,iEnergy] = tmpqz
 
-        # print f
         # qz = f*Q0/deltaE/Hzcm # equation 3 which is wrong, look in fang 2008, eq2
         return A
 
@@ -312,22 +283,9 @@ class Ionization:
                 AltStep (km)
                 msisIn dictionary containing what need to run MSIS
         """
-
-        # def FangModelMaxwellian(self, E0,Q0, altkm, Hz,MassDensity):
-        #     """
-        #     Input:  E = MonoEnergetic Energy (eV)
-        #             altkm = Altitude (km)
-        #             Hz (m)
-        #             Mass Density (kg/m^3)
-        #         Fang 2008 paper
-        # run msis
-        # print 'IonizationFang Function Q0, E0', Q0, E0
         altkm = numpy.arange(AltMin,AltMax,AltStep)
         MassDensity,Hz = self.RunMSISFang(tUnix,glat,glon,altkm=altkm)
         qZ,y,f = self.FangModelMaxwellian(Q0,E0,altkm,Hz,MassDensity)
-
-
-
         return qZ
 
 
@@ -408,7 +366,6 @@ if __name__ == '__main__':
     kk = 0
     plt.figure(104)
     for ii in NumPts:
-        # print ii
         EeV = numpy.logspace(2,5,num=ii)
         Q0 = 1.0
         E0 = 5.0*1e3
@@ -416,10 +373,6 @@ if __name__ == '__main__':
         qZ, qZE,qZSimp = iz.Ionization(EeV,QeV,50,400,1,tunix,glat,glon)
         A = iz.MakeFangModelMatrix(EeV,tunix,glat,glon,altkm=altkm)
         qZMat = numpy.dot(A,NumFlux[0:-1]*6.242e11*1000.*10.) # this factor of 10 is adhoc...
-
-        # print 'qZMat', qZMat.shape
-        # print 'qZMat',qZMat
-        # print 'qZSimp', qZSimp
         # plt.semilogx(qZ,altkm, '-', lw=2, color=color[kk])
         plt.semilogx(qZSimp,altkm,'--',lw=2,color=color[kk])
         plt.semilogx(qZMat,altkm, '+',color=color[kk] )
@@ -429,15 +382,8 @@ if __name__ == '__main__':
     # MakeFangModelMatrix(self, EeV,tUnix, glat,glon,altkm = numpy.arange(80,150,1)):
     EeV = numpy.logspace(2,6,num=51)
     A = iz.MakeFangModelMatrix(EeV,tunix,glat,glon,altkm=altkm)
-    # print A, A.shape
     Q0 = 2.0
     E0 = 5.0*1e3
     NumFlux,QeV = iz.MaxwellianFlux(EeV,Q0,E0)
-    # print 'NumFlux', NumFlux
-    # print 'QeV', QeV
-    # print scipy.integrate.simps(QeV,EeV)
-    # print scipy.integrate.simps(NumFlux*EeV,EeV)
     dE = numpy.diff(EeV)
-    # print dE.shape, EeV.shape
-    # print numpy.sum(NumFlux[0:-1]*EeV[0:-1]*dE)
     plt.show()

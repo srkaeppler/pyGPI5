@@ -1,4 +1,10 @@
 from pathlib import Path
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("pygpi5")  # Defined in pyproject.toml
+except PackageNotFoundError:
+    __version__ = "unknown"
 
 _PACKAGE_DIR = Path(__file__).resolve().parent
 _MODEL_DIR = _PACKAGE_DIR / "Models"
