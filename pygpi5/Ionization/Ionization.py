@@ -9,9 +9,7 @@ from scipy.constants import Boltzmann as kb
 import datetime
 import matplotlib.pyplot as plt
 import scipy.integrate
-import configparser
 
-import pygpi5
 import pygpi5.Models.MSIS as MSIS
 
 class Ionization:
@@ -225,39 +223,71 @@ class Ionization:
         # qz = f*Q0/deltaE/Hzcm # equation 3 which is wrong, look in fang 2008, eq2
         return A
 
-    def Ionization(self,E,EnergyFlux,AltMin,AltMax,AltStep,tUnix,glat,glon, IonizationType='Fang'):
-        # E and EnergyFlux == same shape
+    def Ionization(
+            self,
+            E: list[float] | numpy.typing.NDArray[float],
+            EnergyFlux: list[float] | numpy.typing.NDArray[float],
+            AltMin: float,
+            AltMax: float,
+            AltStep: float,
+            tUnix: float,
+            glat: float,
+            glon: float,
+            IonizationType='Fang'):
         """
-        Input: E energy array (eV)
-                EnergyFlux (erg/cm^2/s or mW/m^2 - same units)
-                AltMin (km)
-                AltMax (km)
-                AltStep (km)
-                msisIn dictionary containing what need to run MSIS
-        """
+        Parameters
+        ----------
+        E : list[float] | numpy.NDArray[float]
+            Energy array in eV.
+        EnergyFlux : list[float] | numpy.NDArray[float]
+            Energy flux corresponding to each energy in E with units erg/cm^2/s or mW/m^2 (same units).
+        AltMin : float
+            Minimum altitude in km.
+        AltMax : float
+            Maximum altitude in km.
+        AltStep : float
+            Altitude step in km.
+        tUnix : float
+            Unix time.
+        glat : float
+            Geodetic latitude in degrees.
+        glon : float
+            Geodetic longitude in degrees between 0-360 degrees
+        IonizationType : str, optional
+            Type of ionization model to use ('Fang' or 'Maxwellian'). Default is 'Fang'.
 
-        # run msis
+        Returns
+        -------
+        qZ : array_like
+            Integrated ionization rate over energy for each altitude.
+        qZE : array_like
+            Ionization rate as a function of altitude and energy.
+        qZsimp : array_like
+            Ionization rate integrated over energy using Simpson's rule for each altitude.
+            Note: I don't think that this works correctly yet.
+        """
         altkm = numpy.arange(AltMin,AltMax,AltStep)
         qZE = numpy.zeros([altkm.shape[0],E.shape[0]])
         qZ = numpy.zeros(altkm.shape[0])
         qZsimp = numpy.zeros(altkm.shape[0])
+
         if IonizationType == 'Fang':
             MassDensity,Hz = self.RunMSISFang(tUnix,glat,glon,altkm=altkm)
             for iE in range(len(E)):
                 tmpqz,y,f = self.FangModel(E[iE],EnergyFlux[iE],altkm,Hz,MassDensity)
                 qZE[:,iE] = tmpqz
 
-
-        # this is slightly different
-        # in this case would put in Q0 and E0 for each energy
-        if IonizationType == 'Maxwellian':
+        elif IonizationType == 'Maxwellian':
+            # this is slightly different
+            # in this case would put in Q0 and E0 for each energy
             MassDensity,Hz = self.RunMSISFang(tUnix,glat,glon,altkm=altkm)
             # FangModelMaxwellian(self, Q0,E0, altkm, Hz,MassDensity):
             for iE in range(len(E)):
                 tmpqz,y,f = self.FangModelMaxwellian(EnergyFlux[iE],E[iE],altkm,Hz,MassDensity)
                 qZE[:,iE] = tmpqz
 
-
+        else:
+            raise ValueError(f"Unknown IonizationType: {IonizationType}. Only 'Fang' or 'Maxwellian' are supported.")
 
         # sum over energy to get the final altitude profile
         # need to multiply by dE
