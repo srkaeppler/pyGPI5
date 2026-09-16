@@ -1,0 +1,7 @@
+uv.lock
+*.egg-info/
+__pycache__/
+*.so
+*.o
+*.pyc
+__pycache__/
